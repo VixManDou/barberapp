@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/AuthContext';
+import Screen from '../lib/Screen';
 import { s, colors } from '../lib/ui';
 import type { Service } from '../lib/types';
 
@@ -24,7 +25,7 @@ export default function Home() {
   useEffect(() => { load(); }, []);
 
   return (
-    <ScrollView style={s.screen} contentContainerStyle={s.content}>
+    <Screen>
       <Text style={s.title}>Hola, {profile?.full_name || 'bienvenido'}</Text>
       <Text style={s.muted}>Rol: {profile?.role ?? '...'}</Text>
 
@@ -48,9 +49,9 @@ export default function Home() {
         </View>
       ))}
 
-      <TouchableOpacity onPress={signOut}>
-        <Text style={[s.muted, { textAlign: 'center', marginTop: 16 }]}>Cerrar sesión</Text>
+      <TouchableOpacity style={[s.btnOutline, { borderColor: colors.danger, marginTop: 16 }]} onPress={signOut}>
+        <Text style={[s.btnOutlineText, { color: colors.danger }]}>Cerrar sesión</Text>
       </TouchableOpacity>
-    </ScrollView>
+    </Screen>
   );
 }

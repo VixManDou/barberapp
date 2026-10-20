@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+import { Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { supabase } from '../lib/supabase';
+import Screen from '../lib/Screen';
 import { s, colors } from '../lib/ui';
 
 export default function Login() {
@@ -39,30 +40,32 @@ export default function Login() {
   };
 
   return (
-    <KeyboardAvoidingView style={[s.screen, { justifyContent: 'center', padding: 24, gap: 12 }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <Screen contentStyle={{ flexGrow: 1, justifyContent: 'center', padding: 24 }}>
       <Text style={[s.title, { textAlign: 'center' }]}>💈 BarberApp</Text>
       <Text style={[s.muted, { textAlign: 'center', marginBottom: 12 }]}>
         {mode === 'login' ? 'Inicia sesión para reservar' : 'Crea tu cuenta'}
       </Text>
 
       {mode === 'register' && (<>
-        <TextInput style={s.input} placeholder="Nombre completo" placeholderTextColor={colors.muted} value={name} onChangeText={setName} />
-        <TextInput style={s.input} placeholder="Teléfono" placeholderTextColor={colors.muted} keyboardType="phone-pad" value={phone} onChangeText={setPhone} />
+        <TextInput style={s.input} placeholder="Nombre completo" placeholderTextColor={colors.muted}
+          value={name} onChangeText={setName} returnKeyType="next" />
+        <TextInput style={s.input} placeholder="Teléfono" placeholderTextColor={colors.muted}
+          keyboardType="phone-pad" value={phone} onChangeText={setPhone} />
       </>)}
       <TextInput style={s.input} placeholder="Correo electrónico" placeholderTextColor={colors.muted}
         autoCapitalize="none" keyboardType="email-address" value={email} onChangeText={setEmail} />
       <TextInput style={s.input} placeholder="Contraseña" placeholderTextColor={colors.muted}
-        secureTextEntry value={password} onChangeText={setPassword} />
+        secureTextEntry value={password} onChangeText={setPassword}
+        returnKeyType="done" onSubmitEditing={submit} />
 
       <TouchableOpacity style={s.btn} onPress={submit} disabled={loading}>
         {loading ? <ActivityIndicator color="#1a1a1a" /> : <Text style={s.btnText}>{mode === 'login' ? 'Entrar' : 'Registrarme'}</Text>}
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setMode(mode === 'login' ? 'register' : 'login')}>
+      <TouchableOpacity onPress={() => setMode(mode === 'login' ? 'register' : 'login')} style={{ padding: 10 }}>
         <Text style={[s.muted, { textAlign: 'center' }]}>
           {mode === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
         </Text>
       </TouchableOpacity>
-    </KeyboardAvoidingView>
+    </Screen>
   );
 }

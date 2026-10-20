@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/AuthContext';
+import Screen from '../lib/Screen';
 import { s, colors, fmtDay, fmtHour } from '../lib/ui';
 import type { Appointment } from '../lib/types';
 
@@ -45,7 +46,7 @@ export default function Appointments() {
   if (loading) return <View style={[s.screen, { justifyContent: 'center' }]}><ActivityIndicator color={colors.primary} /></View>;
 
   return (
-    <ScrollView style={s.screen} contentContainerStyle={s.content}>
+    <Screen>
       <Text style={s.muted}>{isStaff ? 'Todas las citas de la barbería' : 'Tus citas'}</Text>
       {error && <Text style={s.error}>{error}</Text>}
       {!error && items.length === 0 && <Text style={s.muted}>No hay citas todavía.</Text>}
@@ -66,6 +67,6 @@ export default function Appointments() {
           </View>
         );
       })}
-    </ScrollView>
+    </Screen>
   );
 }

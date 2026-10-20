@@ -1,10 +1,11 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 import { ApiError } from '../lib/apiClient';
 import { useAuth } from '../lib/AuthContext';
 import Chip from '../lib/Chip';
 import { sendAppointmentNotification } from '../lib/formspree';
+import Screen from '../lib/Screen';
 import { supabase } from '../lib/supabase';
 import type { Barber, Service } from '../lib/types';
 import { colors, fmtDay, fmtHour, s } from '../lib/ui';
@@ -90,7 +91,7 @@ export default function Book() {
 
   if (result) {
     return (
-      <ScrollView style={s.screen} contentContainerStyle={s.content}>
+      <Screen>
         <Text style={s.title}>✅ Cita registrada</Text>
         <Text style={s.text}>{service?.name} con {barber?.name}{'\n'}{slot && `${fmtDay(slot)} · ${fmtHour(slot)}`}</Text>
         <View style={s.card}>
@@ -103,12 +104,12 @@ export default function Book() {
         <TouchableOpacity style={s.btn} onPress={() => router.replace('/appointments')}>
           <Text style={s.btnText}>Ver mis citas</Text>
         </TouchableOpacity>
-      </ScrollView>
+      </Screen>
     );
   }
 
   return (
-    <ScrollView style={s.screen} contentContainerStyle={s.content}>
+    <Screen>
       <Text style={s.h2}>1. Servicio</Text>
       <View style={s.row}>{services.map((x) => (
         <Chip key={x.id} label={`${x.name} · $${x.price}`} selected={service?.id === x.id} onPress={() => setService(x)} />))}</View>
@@ -134,6 +135,6 @@ export default function Book() {
         disabled={!service || !barber || !slot || saving} onPress={confirm}>
         {saving ? <ActivityIndicator color="#1a1a1a" /> : <Text style={s.btnText}>Confirmar reserva</Text>}
       </TouchableOpacity>
-    </ScrollView>
+    </Screen>
   );
 }
