@@ -1,18 +1,39 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import { Stack, useRouter, useSegments } from 'expo-router';
+import { AuthProvider, useAuth } from '../lib/AuthContext';
+import { colors } from '../lib/ui';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+function Guard() {
+  const { session, loading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
 
-SplashScreen.preventAutoHideAsync();
+  useEffect(() => {
+    if (loading) return;
+    const inLogin = segments[0] === 'login';
+    if (!session && !inLogin) router.replace('/login');
+    else if (session && inLogin) router.replace('/');
+  }, [session, loading, segments]);
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', backgroundColor: colors.bg }}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <Stack screenOptions={{ headerTitleAlign: 'center', headerStyle: { backgroundColor: colors.card }, headerTintColor: colors.text }}>
+      <Stack.Screen name="index" options={{ title: 'BarberApp' }} />
+      <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="book" options={{ title: 'Reservar cita' }} />
+      <Stack.Screen name="appointments" options={{ title: 'Citas' }} />
+    </Stack>
   );
+}
+
+export default function Root() {
+  return <AuthProvider><Guard /></AuthProvider>;
 }
