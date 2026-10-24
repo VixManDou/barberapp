@@ -1,1 +1,1 @@
-   export const total: number = "esto no es un número";
+   export const total: number = 100;
